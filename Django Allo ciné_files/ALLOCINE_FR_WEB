@@ -1,0 +1,184 @@
+// jad ac test listicle
+
+if (typeof dataLayer != "undefined" && typeof dataLayer[0].tags != "undefined" && typeof jad != "undefined" ) {
+  if ([...dataLayer[0].tags].includes(1000000037)) {
+    jad.cmd.push(function() {
+      jad.public.addTargeting("test", ["jad_ac_listicle"])
+    })
+  }
+}
+
+// détection du device par la largeur d'écran (utilisé pour seedtag)
+
+var pageWidth = window.innerWidth || document.body.clientWidth;
+
+// Script seedtag : diaporama movie page, diaporama serie page, avec id différent en fonction du device
+
+var mobileSeedtagId = '4485-3991-01',
+    desktopSeedtagId = '0908-8874-01',
+    testSeedtagId = '0908-8874-02',
+    seedtagId,
+    newsId,
+    isDiapo,
+	seedtagConsent = typeof Didomi !== "undefined" ? Didomi.getUserConsentStatusForVendor(157) : false;
+
+if (typeof wbads !== "undefined") {
+  newsId = wbads.config.targeting.news_id;
+  isDiapo = (wbads.getPage() === "newspage/newspage_slideshow_details" || wbads.getPage() === "newspage/newspage_series_slideshow_details")
+} else if (typeof jad !== "undefined") {
+  newsId = jad.public.getConfig().targeting.news_id
+  isDiapo = (jad.public.getPage() === "newspage/newspage_slideshow_details" || jad.public.getPage() === "newspage/newspage_series_slideshow_details")
+}
+
+if (newsId === '18684374') {
+  seedtagId = testSeedtagId;
+} else {
+  pageWidth < 1024 ? seedtagId = mobileSeedtagId : seedtagId = desktopSeedtagId;
+}
+
+if (isDiapo && seedtagConsent) {
+  window._seedtagq = window._seedtagq || [];
+  window._seedtagq.push(['_setId', seedtagId]);
+  (function () {
+    var st = document.createElement('script');
+    st.type = 'text/javascript';
+    st.async = true;
+    st.src = ('https:' == document.location.protocol
+      ? 'https'
+      : 'http') + '://config.seedtag.com/loader.js?v=' + Math.random();
+    var s = document.getElementsByTagName('script')[0];
+    s.parentNode.insertBefore(st, s);
+  })();
+}
+
+/*! Copyright (c) 2020 Mediarithmics; All Rights Reserved */
+    !function(t,e,a){"use strict";var i=t.scimhtiraidem||{};function s(t){var e=i[a]||{};i[a]=e,e[t]||(e[t]=function(){i._queue[a].push({method:t,args:Array.prototype.slice.apply(arguments)})})}t.googletag=t.googletag||{},t.googletag.cmd=t.googletag.cmd||[],t.googletag.cmd.push(function(){var e=t.localStorage.getItem("mics_sgmts"),a=JSON.parse(e),i=a||{};Object.keys(i).forEach(function(e){t.googletag.pubads().setTargeting("mics_"+e,i[e].map(String))})});var r="init call config push pushDefault addProperties addProperty onFinish onStart _reset".split(" ");i._queue=i._queue||{},i._names=i._names||[],i._names.push(a),i._queue[a]=i._queue[a]||[],i._startTime=(new Date).getTime(),i._snippetVersion="2.0";for(var o=0;o<r.length;o++)s(r[o]);t.scimhtiraidem=i,t[a]=i[a];var n=e.createElement("script");n.setAttribute("type","text/javascript"),n.setAttribute("src","https://static.mediarithmics.com/tag/2/tag.min.js"),n.setAttribute("async","true"),e.getElementsByTagName("script")[0].parentNode.appendChild(n)}(window,document,"webediaMics");
+    
+    webediaMics.init("all-2020");
+    webediaMics.call("syncFeeds");
+
+    var gen_data = {
+        global_container : function (str) {
+            var j = 0;
+            if (Object.keys(dataLayer).length > 0) {
+                dataLayer.forEach((item, index) => {
+                    if (item[str]) j = index;
+                });
+            }
+            return (dataLayer[j][str]) ? dataLayer[j][str] : null;
+        },
+        stringToObject: function (element) {
+            if (typeof element == "string") return [element];
+            return element;
+        },
+        extract_genre: function (str) {
+            var str = str.split("&");
+            var res = new Array();
+            for (var i = 0; i < Object.keys(str).length; i++) {
+                var restmp = str[i].split("=");
+                res.push(restmp[1]);
+                }
+            return res;
+        },
+        stringToArray: function (str) {
+            return str.split(",");
+        },
+        dateISO: function (date) {
+            var dateiso;
+            Date.parse(date) ? dateiso = new Date(date).toISOString() : dateiso = "";
+            return dateiso;
+        },
+        extract_cinema_content: function () {
+            var cinema_content = {};
+            if (this.global_container("tags") && (Object.keys(this.global_container("tags")).length > 0)) cinema_content["tags"] = this.stringToObject(this.global_container("tags"));
+            if (this.global_container("svod_providers") && (Object.keys(this.global_container("svod_providers")).length > 0)) cinema_content["svod_providers"] = this.stringToObject(this.global_container("svod_providers"));
+            if (this.global_container("press_rating")) cinema_content["press_rating"] = this.global_container("press_rating");
+            if (this.global_container("user_rating")) cinema_content["user_rating"] = this.global_container("user_rating");
+            if (this.global_container("company") && Object.keys(this.global_container("company")).length > 0) cinema_content["company"] = this.stringToObject(this.global_container("company"));
+            if (typeof this.global_container("genre") == "string") cinema_content["genre"] = this.extract_genre(this.global_container("genre"));
+            if (typeof this.global_container("nationality") == "string") cinema_content["nationality"] = this.stringToArray(this.global_container("nationality"));
+            if (typeof this.global_container("actor") == "string") cinema_content["actor"] = this.stringToArray(this.global_container("actor"));
+            if (typeof this.global_container("is_netflix") == "number") cinema_content["is_netflix"] = this.global_container("is_netflix") ? true : false;
+            if (typeof this.global_container("is_amazon") == "number") cinema_content["is_amazon"] = this.global_container("is_amazon") ? true : false;
+            if (typeof this.global_container("is_disney") == "number") cinema_content["is_disney"] = this.global_container("is_disney") ? true : false;
+            if (typeof this.global_container("is_mycanal") == "number") cinema_content["is_mycanal"] = this.global_container("is_mycanal") ? true : false;
+            return cinema_content;
+        },
+        extract_movie: function () {
+            var movie = {};
+            if (this.global_container("movie_label")) movie["movie_label"] = this.global_container("movie_label");
+            if (this.global_container("movie_id")) movie["movie_id"] = this.global_container("movie_id");
+            if (typeof this.global_container("releasedate") == "string") movie["releasedate"] = this.dateISO(this.global_container("releasedate"));
+            if (typeof this.global_container("director") == "string") movie["director"] = this.stringToArray(this.global_container("director"));
+            if (typeof this.global_container("coming_soon") == "number") movie["coming_soon"] = this.global_container("coming_soon") ? true : false;
+            if (this.global_container("movie_distributors")) movie["movie_distributors"] = this.global_container("movie_distributors");
+            return movie;
+        },
+        extract_series: function () {
+            var series = {};
+            if (this.global_container("series_label")) series["series_label"] = this.global_container("series_label");
+            if (this.global_container("series_id")) series["series_id"] = this.global_container("series_id");
+            if (typeof this.global_container("series_distributors") == "string") series["series_distributors"] = this.stringToArray(this.global_container("series_distributors"));
+            if (this.global_container("series_releaser") && (Object.keys(this.global_container("series_releaser")).length > 0)) series["series_releaser"] = this.global_container("series_releaser");
+            return series;
+        },
+        extract_showtime: function () {
+            var showtime = {};
+            if (this.global_container("theater_id")) showtime["theater_id"] = this.global_container("theater_id");
+            if (this.global_container("theater.label")) showtime["theater_label"] = this.global_container("theater.label");
+            if (this.global_container("theater.circuit")) showtime["theater_circuit"] = this.global_container("theater.circuit");
+            if (this.global_container("geo_dep")) showtime["geo_dep"] = this.global_container("geo_dep");
+            if (this.global_container("geo_zip")) showtime["geo_zip"] = this.global_container("geo_zip");
+            return showtime;
+        },
+        extract_news: function () {
+            var news = {};
+            if (this.global_container("news_id")) news["news_id"] = this.global_container("news_id");
+            if (this.global_container("news_type")) news["news_type"] = this.global_container("news_type");
+            if (this.global_container("news_section")) news["news_section"] = this.global_container("news_section");
+            if (this.global_container("linked_entities")) {
+                if (typeof this.global_container("linked_entities").distributors[0] == "string") news["distributors"] = this.stringToArray(this.global_container("linked_entities").distributors[0]);
+                if (typeof this.global_container("linked_entities").movie[0] == "string") news["movies"] = this.stringToArray(this.global_container("linked_entities").movie[0]);
+                if (typeof this.global_container("linked_entities").series[0] == "string") news["series"] = this.stringToArray(this.global_container("linked_entities").series[0]);
+                if (typeof this.global_container("linked_entities").person[0] == "string") news["persons"] = this.stringToArray(this.global_container("linked_entities").person[0]);
+            }
+
+            return news;
+        },
+        extract_data: function () {
+            var data = {};
+            if (this.global_container("site_section")) data["section"] = this.global_container("site_section");
+            if (this.global_container("visitor_country")) data["visitor_country"] = this.global_container("visitor_country");
+            data["pageTitle"] = document.title;
+            data["urlPath"] = window.location.pathname;
+            const url = window.location.href;
+            if (url.includes('hid')){
+                const params = url.split('hid=');
+                data["$email_hash"]=params[1];
+            }
+            data["vertical"] = "cinema";
+            data["channel_token"] = "all-2020";
+            var cinema = {};
+            var cinema_content = this.extract_cinema_content();
+            if (Object.keys(cinema_content).length > 0) cinema["cinema_content"] = cinema_content;
+            var movie = this.extract_movie();
+            if (Object.keys(movie).length > 0) cinema["movie"] = movie;
+            var series = this.extract_series();
+            if (Object.keys(series).length > 0) cinema["series"] = series;
+            var showtime = this.extract_showtime();
+            if (Object.keys(showtime).length > 0) cinema["showtime"] = showtime;
+            var news = this.extract_news();
+            if (Object.keys(news).length > 0) cinema["news"] = news;
+            if (Object.keys(cinema).length > 0) data["cinema"] = cinema;
+            return data;
+        }
+    };
+
+    var event_type = (gen_data.global_container("site_route")) ? gen_data.global_container("site_route") : 'error_event_datalayer_empty';
+    if (gen_data.global_container("user_id")) {
+        webediaMics.addProperty("$user_account_id", gen_data.global_container("user_id"));
+        webediaMics.addProperty("$compartment_id", "1517");
+    }
+    var event_data = gen_data.extract_data();
+
+    webediaMics.push(event_type, event_data);
